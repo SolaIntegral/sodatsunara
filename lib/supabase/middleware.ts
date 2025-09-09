@@ -2,15 +2,6 @@ import { createClient } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function updateSession(request: NextRequest) {
-  const isDemoMode = request.cookies.get("demo-mode")?.value === "true"
-
-  if (isDemoMode) {
-    console.log("[v0] Demo mode detected, skipping auth check")
-    return NextResponse.next({
-      request,
-    })
-  }
-
   const supabaseResponse = NextResponse.next({
     request,
   })

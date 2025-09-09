@@ -109,35 +109,6 @@ export default function CreateJobPage() {
     }
   }
 
-  const fillDemoJobData = () => {
-    const tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 30)
-    const deadlineDate = tomorrow.toISOString().split("T")[0]
-
-    setFormData({
-      title: "Webデザイナー（学生アルバイト歓迎）",
-      description:
-        "習志野市の地域密着型IT企業で、Webサイトのデザイン・制作業務を担当していただきます。\n\n【具体的な業務内容】\n・企業サイトのデザイン制作\n・バナー・ロゴデザイン\n・UI/UXデザインの改善提案\n・クライアントとの打ち合わせ参加\n\n学生の方には実務経験を積みながら、将来のキャリア形成をサポートします。",
-      requirements:
-        "・Photoshop、Illustratorの基本操作ができる方\n・HTML/CSSの基礎知識がある方\n・コミュニケーション能力のある方\n・学習意欲の高い方\n\n※未経験者でもやる気のある方は歓迎します！",
-      benefits:
-        "・交通費全額支給\n・スキルアップ研修制度\n・正社員登用制度あり\n・MacBook貸与\n・フレックスタイム制\n・リモートワーク可（週2日まで）",
-      employment_type: "part_time",
-      salary_min: "1200",
-      salary_max: "1800",
-      salary_type: "hourly",
-      location: "習志野市津田沼1-1-1（津田沼駅徒歩5分）",
-      remote_work: true,
-      work_schedule: "10:00-19:00の間で4-8時間（シフト制）",
-      application_deadline: deadlineDate,
-      required_skills: "Photoshop, Illustrator, HTML, CSS",
-      preferred_skills: "Figma, JavaScript, React, デザイン思考",
-      experience_level: "entry",
-      education_level: "high_school",
-      is_student_friendly: true,
-    })
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-narashino-blue/5 to-future-orange/5">
       <div className="container mx-auto px-4 py-8">
@@ -157,17 +128,7 @@ export default function CreateJobPage() {
 
         <Card className="max-w-4xl mx-auto">
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              求人情報
-              <Button
-                type="button"
-                variant="outline"
-                onClick={fillDemoJobData}
-                className="bg-future-orange/10 border-future-orange text-future-orange hover:bg-future-orange hover:text-white"
-              >
-                🎯 デモデータを入力
-              </Button>
-            </CardTitle>
+            <CardTitle>求人情報</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -189,7 +150,6 @@ export default function CreateJobPage() {
                     <Label htmlFor="employment_type">雇用形態 *</Label>
                     <Select
                       required
-                      value={formData.employment_type}
                       onValueChange={(value) => setFormData((prev) => ({ ...prev, employment_type: value }))}
                     >
                       <SelectTrigger>
@@ -224,8 +184,8 @@ export default function CreateJobPage() {
                   <div className="space-y-2">
                     <Label htmlFor="salary_type">給与形態</Label>
                     <Select
-                      value={formData.salary_type}
                       onValueChange={(value) => setFormData((prev) => ({ ...prev, salary_type: value }))}
+                      defaultValue="hourly"
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -346,10 +306,7 @@ export default function CreateJobPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="experience_level">経験レベル</Label>
-                    <Select
-                      value={formData.experience_level}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, experience_level: value }))}
-                    >
+                    <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, experience_level: value }))}>
                       <SelectTrigger>
                         <SelectValue placeholder="選択してください" />
                       </SelectTrigger>
@@ -364,10 +321,7 @@ export default function CreateJobPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="education_level">学歴</Label>
-                    <Select
-                      value={formData.education_level}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, education_level: value }))}
-                    >
+                    <Select onValueChange={(value) => setFormData((prev) => ({ ...prev, education_level: value }))}>
                       <SelectTrigger>
                         <SelectValue placeholder="選択してください" />
                       </SelectTrigger>

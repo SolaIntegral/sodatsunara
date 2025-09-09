@@ -38,8 +38,6 @@
   --sidebar-accent-foreground: oklch(1 0 0); /* White text on sidebar accent */
   --sidebar-border: oklch(0.85 0 0); /* Light border for sidebar */
   --sidebar-ring: oklch(0.55 0.15 250 / 0.5); /* Narashino Blue sidebar focus ring */
-  --color-narashino-blue: oklch(0.55 0.15 250); /* #3386E4 */
-  --color-future-orange: oklch(0.75 0.12 70); /* #F5A100 */
 }
 
 .dark {
@@ -75,8 +73,6 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.55 0.15 250 / 0.5);
-  --color-narashino-blue: oklch(0.55 0.15 250); /* #3386E4 */
-  --color-future-orange: oklch(0.75 0.12 70); /* #F5A100 */
 }
 
 @theme inline {
