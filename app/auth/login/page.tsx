@@ -1,13 +1,13 @@
 "use client"
 
 import type React from "react"
-
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -19,6 +19,58 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [userType, setUserType] = useState<"job_seeker" | "company">("job_seeker")
   const router = useRouter()
+
+  const handleDemoLogin = async (demoType: "job_seeker" | "company") => {
+    console.log("[v0] デモログイン開始 - ユーザータイプ:", demoType)
+    setIsLoading(true)
+
+    try {
+      // デモユーザー情報を設定
+      const demoUser =
+        demoType === "job_seeker"
+          ? {
+              id: "demo-student-001",
+              email: "demo.student@toho-u.ac.jp",
+              user_type: "job_seeker",
+              name: "田中 太郎",
+              is_demo: true,
+              school_verified: true,
+              school_name: "東邦大学",
+              major: "情報工学科",
+            }
+          : {
+              id: "demo-company-001",
+              email: "demo.company@narashino-corp.jp",
+              user_type: "company",
+              name: "習志野商事株式会社",
+              is_demo: true,
+              company_verified: true,
+              plan: "standard",
+            }
+
+      console.log("[v0] デモユーザー情報:", demoUser)
+
+      // ローカルストレージに保存
+      localStorage.setItem("demo_mode", "true")
+      localStorage.setItem("demo_user", JSON.stringify(demoUser))
+
+      // デモモード用クッキーを設定
+      document.cookie = "demo_mode=true; path=/; max-age=86400"
+
+      console.log("[v0] ローカルストレージに保存完了")
+
+      // リダイレクト
+      const redirectPath = demoType === "job_seeker" ? "/dashboard/job-seeker" : "/dashboard/company"
+      console.log("[v0] リダイレクト先:", redirectPath)
+
+      window.location.href = redirectPath
+    } catch (error) {
+      console.error("[v0] デモログインエラー:", error)
+      setError("デモログインに失敗しました")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,6 +105,57 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-narashino-blue mb-2">ならしごと</h1>
           <p className="text-muted-foreground">習志野市の地域密着型求人プラットフォーム</p>
         </div>
+
+        <Card className="mb-6 border-2 border-future-orange/20 bg-gradient-to-r from-future-orange/5 to-narashino-blue/5">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-xl text-narashino-blue flex items-center justify-center gap-2">
+              🚀 デモ体験
+              <Badge variant="secondary" className="bg-future-orange text-white">
+                無料
+              </Badge>
+            </CardTitle>
+            <CardDescription>プラットフォームの機能をお試しください</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 gap-3">
+              <Button
+                onClick={() => handleDemoLogin("job_seeker")}
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-narashino-blue to-narashino-blue/80 hover:from-narashino-blue/90 hover:to-narashino-blue/70 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    体験開始中...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">🎓 学生・求職者として体験</div>
+                )}
+              </Button>
+
+              <Button
+                onClick={() => handleDemoLogin("company")}
+                disabled={isLoading}
+                variant="outline"
+                className="w-full border-2 border-future-orange text-future-orange hover:bg-future-orange hover:text-white shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-future-orange/30 border-t-future-orange rounded-full animate-spin" />
+                    体験開始中...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">🏢 企業・採用担当者として体験</div>
+                )}
+              </Button>
+            </div>
+
+            <div className="text-xs text-muted-foreground text-center space-y-1">
+              <p>• 学生デモ: 求人検索・応募・プロフィール管理</p>
+              <p>• 企業デモ: 求人投稿・応募者管理・統計分析</p>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
