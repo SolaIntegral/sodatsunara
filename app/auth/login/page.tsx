@@ -57,18 +57,22 @@ export default function LoginPage() {
   }
 
   const handleDemoLogin = async () => {
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
-      const demoEmail = userType === "job_seeker" ? "demo.student@toho-u.ac.jp" : "demo.company@gmail.com"
+      const demoUser = {
+        id: userType === "job_seeker" ? "demo-student-001" : "demo-company-001",
+        email: userType === "job_seeker" ? "demo.student@toho-u.ac.jp" : "demo.company@gmail.com",
+        user_type: userType,
+        name: userType === "job_seeker" ? "田中 太郎" : "株式会社サンプル",
+        is_demo: true,
+        school_verified: userType === "job_seeker" ? true : false,
+      }
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: demoEmail,
-        password: "demo123456",
-      })
-      if (error) throw error
+      // デモユーザー情報をローカルストレージに保存
+      localStorage.setItem("demo_user", JSON.stringify(demoUser))
+      localStorage.setItem("demo_mode", "true")
 
       // ユーザータイプに応じてリダイレクト
       if (userType === "job_seeker") {
@@ -77,7 +81,7 @@ export default function LoginPage() {
         router.push("/dashboard/company")
       }
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "デモログインに失敗しました")
+      setError("デモログインに失敗しました")
     } finally {
       setIsLoading(false)
     }
