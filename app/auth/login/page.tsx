@@ -12,6 +12,7 @@ export default function LoginPage() {
   const router = useRouter()
 
   const handleDemoLogin = async () => {
+    console.log("[v0] デモログイン開始 - ユーザータイプ:", userType)
     setIsLoading(true)
 
     try {
@@ -24,20 +25,25 @@ export default function LoginPage() {
         school_verified: userType === "job_seeker" ? true : false,
       }
 
+      console.log("[v0] デモユーザー情報:", demoUser)
       localStorage.setItem("demo_user", JSON.stringify(demoUser))
       localStorage.setItem("demo_mode", "true")
+      console.log("[v0] ローカルストレージに保存完了")
 
       // 少し遅延を追加してローディング状態を表示
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // ユーザータイプに応じてリダイレクト
+      const redirectPath = userType === "job_seeker" ? "/dashboard/job-seeker" : "/dashboard/company"
+      console.log("[v0] リダイレクト先:", redirectPath)
+
       if (userType === "job_seeker") {
         router.push("/dashboard/job-seeker")
       } else {
         router.push("/dashboard/company")
       }
     } catch (error: unknown) {
-      console.error("デモログインエラー:", error)
+      console.error("[v0] デモログインエラー:", error)
     } finally {
       setIsLoading(false)
     }
@@ -79,9 +85,19 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleDemoLogin}
                 disabled={isLoading}
-                className="w-full bg-narashino-blue text-white hover:bg-narashino-blue/90 h-12 text-lg"
+                className="w-full bg-gradient-to-r from-narashino-blue to-narashino-blue/80 text-white hover:from-narashino-blue/90 hover:to-narashino-blue/70 h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-narashino-blue/20"
               >
-                {isLoading ? "ログイン中..." : `🚀 ${userType === "job_seeker" ? "学生" : "企業"}デモで体験開始`}
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    ログイン中...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🚀</span>
+                    <span>{userType === "job_seeker" ? "学生デモで体験開始" : "企業デモで体験開始"}</span>
+                  </div>
+                )}
               </Button>
 
               <div className="bg-future-orange/10 p-4 rounded-lg border border-future-orange/20">
