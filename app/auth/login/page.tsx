@@ -25,7 +25,6 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      // デモユーザー情報を設定
       const demoUser =
         demoType === "job_seeker"
           ? {
@@ -50,25 +49,37 @@ export default function LoginPage() {
 
       console.log("[v0] デモユーザー情報:", demoUser)
 
-      // ローカルストレージに保存
       localStorage.setItem("demo_mode", "true")
       localStorage.setItem("demo_user", JSON.stringify(demoUser))
-
-      // デモモード用クッキーを設定
       document.cookie = "demo_mode=true; path=/; max-age=86400"
+      document.cookie = `demo_user_type=${demoType}; path=/; max-age=86400`
 
-      console.log("[v0] ローカルストレージに保存完了")
+      console.log("[v0] ローカルストレージとクッキー設定完了")
 
-      // リダイレクト
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
       const redirectPath = demoType === "job_seeker" ? "/dashboard/job-seeker" : "/dashboard/company"
-      console.log("[v0] リダイレクト先:", redirectPath)
+      console.log("[v0] リダイレクト実行:", redirectPath)
 
-      window.location.href = redirectPath
+      try {
+        router.push(redirectPath)
+        console.log("[v0] router.push実行完了")
+      } catch (routerError) {
+        console.log("[v0] router.pushが失敗、window.location.hrefを使用")
+        window.location.href = redirectPath
+      }
+
+      setTimeout(() => {
+        if (window.location.pathname === "/auth/login") {
+          console.log("[v0] フォールバックリダイレクト実行")
+          window.location.replace(redirectPath)
+        }
+      }, 2000)
     } catch (error) {
       console.error("[v0] デモログインエラー:", error)
-      setError("デモログインに失敗しました")
+      setError("デモログインに失敗しました。再度お試しください。")
     } finally {
-      setIsLoading(false)
+      setTimeout(() => setIsLoading(false), 1000)
     }
   }
 
