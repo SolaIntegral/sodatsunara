@@ -1,11 +1,15 @@
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
+import type React from "react"
+
+import { useEffect, useState } from "react"
+import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MapPin, Building, Clock, Heart, Search } from "lucide-react"
-import Link from "next/link"
 
 interface Job {
   id: string
@@ -25,57 +29,166 @@ interface Job {
   }
 }
 
-export default async function JobsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
-  const params = await searchParams
-  const supabase = await createClient()
+const demoJobs: Job[] = [
+  {
+    id: "demo-1",
+    title: "Webデザイナー（アルバイト）",
+    description:
+      "習志野市のIT企業でWebデザインのお仕事です。学生歓迎！未経験でも丁寧に指導します。PhotoshopやIllustratorの基本操作ができる方歓迎。",
+    employment_type: "part_time",
+    salary_min: 1200,
+    salary_max: 1500,
+    salary_type: "hourly",
+    location: "習志野市津田沼",
+    remote_work: true,
+    is_student_friendly: true,
+    created_at: "2025-01-08T10:00:00Z",
+    companies: {
+      company_name: "株式会社テックナラシノ",
+      industry: "IT・Web",
+    },
+  },
+  {
+    id: "demo-2",
+    title: "カフェスタッフ",
+    description:
+      "津田沼駅近くのおしゃれなカフェでスタッフ募集中！接客経験がなくても大丈夫です。明るく元気な方をお待ちしています。",
+    employment_type: "part_time",
+    salary_min: 1000,
+    salary_max: 1200,
+    salary_type: "hourly",
+    location: "習志野市津田沼",
+    remote_work: false,
+    is_student_friendly: true,
+    created_at: "2025-01-07T15:30:00Z",
+    companies: {
+      company_name: "カフェ・ド・ナラシノ",
+      industry: "飲食・サービス",
+    },
+  },
+  {
+    id: "demo-3",
+    title: "営業アシスタント",
+    description: "地域密着型の不動産会社で営業アシスタントを募集しています。事務作業中心で、お客様対応もお任せします。",
+    employment_type: "full_time",
+    salary_min: 22,
+    salary_max: 28,
+    salary_type: "yearly",
+    location: "習志野市大久保",
+    remote_work: false,
+    is_student_friendly: false,
+    created_at: "2025-01-06T09:15:00Z",
+    companies: {
+      company_name: "習志野不動産株式会社",
+      industry: "不動産",
+    },
+  },
+  {
+    id: "demo-4",
+    title: "プログラマー（インターンシップ）",
+    description: "大学生向けのプログラミングインターンシップです。React、Node.jsを使った開発経験を積めます。",
+    employment_type: "internship",
+    salary_min: 1500,
+    salary_max: 2000,
+    salary_type: "hourly",
+    location: "習志野市新津田沼",
+    remote_work: true,
+    is_student_friendly: true,
+    created_at: "2025-01-05T14:20:00Z",
+    companies: {
+      company_name: "株式会社デジタルソリューションズ",
+      industry: "IT・Web",
+    },
+  },
+]
 
-  let query = supabase
-    .from("jobs")
-    .select(`
-      id,
-      title,
-      description,
-      employment_type,
-      salary_min,
-      salary_max,
-      salary_type,
-      location,
-      remote_work,
-      is_student_friendly,
-      created_at,
-      companies!inner (
-        company_name,
-        industry
-      )
-    `)
-    .eq("is_active", true)
-    .order("created_at", { ascending: false })
+export default function JobsPage() {
+  const [jobs, setJobs] = useState<Job[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchParams, setSearchParams] = useState({
+    search: "",
+    employment_type: "all",
+    location: "all",
+    student_friendly: "false",
+  })
 
-  // 検索フィルター適用
-  if (params.search) {
-    query = query.or(`title.ilike.%${params.search}%,description.ilike.%${params.search}%`)
-  }
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const isDemoMode = typeof window !== "undefined" && localStorage.getItem("demo_mode") === "true"
 
-  if (params.employment_type && params.employment_type !== "all") {
-    query = query.eq("employment_type", params.employment_type)
-  }
+      if (isDemoMode) {
+        setJobs(demoJobs)
+        setLoading(false)
+        return
+      }
 
-  if (params.location && params.location !== "all") {
-    query = query.ilike("location", `%${params.location}%`)
-  }
+      // 通常のSupabase処理
+      const supabase = createClient()
+      const query = supabase
+        .from("jobs")
+        .select(`
+          id,
+          title,
+          description,
+          employment_type,
+          salary_min,
+          salary_max,
+          salary_type,
+          location,
+          remote_work,
+          is_student_friendly,
+          created_at,
+          companies!inner (
+            company_name,
+            industry
+          )
+        `)
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
 
-  if (params.student_friendly === "true") {
-    query = query.eq("is_student_friendly", true)
-  }
+      const { data, error } = await query
 
-  const { data: jobs, error } = await query
+      if (error) {
+        console.error("Error fetching jobs:", error)
+      } else {
+        setJobs(data || [])
+      }
+      setLoading(false)
+    }
 
-  if (error) {
-    console.error("Error fetching jobs:", error)
+    fetchJobs()
+  }, [])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    const isDemoMode = typeof window !== "undefined" && localStorage.getItem("demo_mode") === "true"
+
+    if (isDemoMode) {
+      let filteredJobs = demoJobs
+
+      if (searchParams.search) {
+        filteredJobs = filteredJobs.filter(
+          (job) =>
+            job.title.toLowerCase().includes(searchParams.search.toLowerCase()) ||
+            job.description.toLowerCase().includes(searchParams.search.toLowerCase()) ||
+            job.companies.company_name.toLowerCase().includes(searchParams.search.toLowerCase()),
+        )
+      }
+
+      if (searchParams.employment_type !== "all") {
+        filteredJobs = filteredJobs.filter((job) => job.employment_type === searchParams.employment_type)
+      }
+
+      if (searchParams.location !== "all") {
+        filteredJobs = filteredJobs.filter((job) => job.location.includes(searchParams.location))
+      }
+
+      if (searchParams.student_friendly === "true") {
+        filteredJobs = filteredJobs.filter((job) => job.is_student_friendly)
+      }
+
+      setJobs(filteredJobs)
+    }
   }
 
   const formatSalary = (job: Job) => {
@@ -106,6 +219,17 @@ export default async function JobsPage({
     return labels[type] || type
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-narashino-blue/5 to-future-orange/5 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-narashino-blue mx-auto mb-4"></div>
+          <p className="text-muted-foreground">求人を読み込み中...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-narashino-blue/5 to-future-orange/5">
       <div className="container mx-auto px-4 py-8">
@@ -115,9 +239,7 @@ export default async function JobsPage({
             <h1 className="text-3xl font-bold text-narashino-blue">求人検索</h1>
             <p className="text-muted-foreground">習志野市の地域密着型求人を探そう</p>
           </div>
-          <Button asChild>
-            <Link href="/dashboard/job-seeker">ダッシュボードに戻る</Link>
-          </Button>
+          <Button onClick={() => (window.location.href = "/dashboard/job-seeker")}>ダッシュボードに戻る</Button>
         </div>
 
         {/* 検索・フィルターセクション */}
@@ -129,15 +251,22 @@ export default async function JobsPage({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form method="GET" className="space-y-4">
+            <form onSubmit={handleSearch} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">キーワード</label>
-                  <Input name="search" placeholder="職種、会社名、キーワード" defaultValue={params.search as string} />
+                  <Input
+                    placeholder="職種、会社名、キーワード"
+                    value={searchParams.search}
+                    onChange={(e) => setSearchParams({ ...searchParams, search: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">雇用形態</label>
-                  <Select name="employment_type" defaultValue={(params.employment_type as string) || "all"}>
+                  <Select
+                    value={searchParams.employment_type}
+                    onValueChange={(value) => setSearchParams({ ...searchParams, employment_type: value })}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -153,7 +282,10 @@ export default async function JobsPage({
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">勤務地</label>
-                  <Select name="location" defaultValue={(params.location as string) || "all"}>
+                  <Select
+                    value={searchParams.location}
+                    onValueChange={(value) => setSearchParams({ ...searchParams, location: value })}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -169,7 +301,10 @@ export default async function JobsPage({
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">学生歓迎</label>
-                  <Select name="student_friendly" defaultValue={(params.student_friendly as string) || "false"}>
+                  <Select
+                    value={searchParams.student_friendly}
+                    onValueChange={(value) => setSearchParams({ ...searchParams, student_friendly: value })}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -180,7 +315,7 @@ export default async function JobsPage({
                   </Select>
                 </div>
               </div>
-              <Button type="submit" className="w-full md:w-auto">
+              <Button type="submit" className="w-full md:w-auto bg-narashino-blue hover:bg-narashino-blue/90">
                 検索
               </Button>
             </form>
@@ -190,10 +325,10 @@ export default async function JobsPage({
         {/* 求人一覧 */}
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">検索結果 {jobs?.length || 0}件</h2>
+            <h2 className="text-xl font-semibold">検索結果 {jobs.length}件</h2>
           </div>
 
-          {jobs && jobs.length > 0 ? (
+          {jobs.length > 0 ? (
             <div className="grid gap-6">
               {jobs.map((job) => (
                 <Card key={job.id} className="hover:shadow-lg transition-shadow">
@@ -202,9 +337,12 @@ export default async function JobsPage({
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="text-xl font-semibold text-narashino-blue">
-                            <Link href={`/jobs/${job.id}`} className="hover:underline">
+                            <button
+                              onClick={() => (window.location.href = `/jobs/${job.id}`)}
+                              className="hover:underline text-left"
+                            >
                               {job.title}
-                            </Link>
+                            </button>
                           </h3>
                           {job.is_student_friendly && (
                             <Badge variant="secondary" className="bg-green-100 text-green-800">
@@ -236,8 +374,12 @@ export default async function JobsPage({
                         </div>
                       </div>
                       <div className="flex flex-col gap-2 ml-4">
-                        <Button size="sm" asChild>
-                          <Link href={`/jobs/${job.id}`}>詳細を見る</Link>
+                        <Button
+                          size="sm"
+                          onClick={() => (window.location.href = `/jobs/${job.id}`)}
+                          className="bg-narashino-blue hover:bg-narashino-blue/90"
+                        >
+                          詳細を見る
                         </Button>
                         <Button size="sm" variant="outline">
                           <Heart className="w-4 h-4" />
@@ -252,9 +394,7 @@ export default async function JobsPage({
             <Card>
               <CardContent className="text-center py-12">
                 <div className="text-muted-foreground mb-4">条件に合う求人が見つかりませんでした</div>
-                <Button asChild>
-                  <Link href="/jobs">すべての求人を見る</Link>
-                </Button>
+                <Button onClick={() => (window.location.href = "/jobs")}>すべての求人を見る</Button>
               </CardContent>
             </Card>
           )}
