@@ -37,15 +37,11 @@ export default function LoginPage() {
       // 少し遅延を追加してローディング状態を表示
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      // ユーザータイプに応じてリダイレクト
       const redirectPath = userType === "job_seeker" ? "/dashboard/job-seeker" : "/dashboard/company"
       console.log("[v0] リダイレクト先:", redirectPath)
+      console.log("[v0] window.location.hrefでリダイレクト実行")
 
-      if (userType === "job_seeker") {
-        router.push("/dashboard/job-seeker")
-      } else {
-        router.push("/dashboard/company")
-      }
+      window.location.href = redirectPath
     } catch (error: unknown) {
       console.error("[v0] デモログインエラー:", error)
     } finally {

@@ -7,34 +7,68 @@ import { Eye, Users, MessageSquare, TrendingUp } from "lucide-react"
 import Link from "next/link"
 
 export default async function CompanyDashboard() {
-  const supabase = await createClient()
+  const isDemoMode = typeof window !== "undefined" && localStorage.getItem("demo_mode") === "true"
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-  if (error || !user) {
-    redirect("/auth/login")
+  let profile: any = null
+  let jobStats: any[] = []
+  let applicationStats: any[] = []
+
+  if (isDemoMode) {
+    profile = {
+      company_name: "株式会社習志野テック",
+      verification_status: "approved",
+      plan_type: "standard",
+    }
+
+    jobStats = [
+      { id: 1, view_count: 45, is_active: true },
+      { id: 2, view_count: 32, is_active: true },
+      { id: 3, view_count: 28, is_active: false },
+    ]
+
+    applicationStats = [
+      { id: 1, status: "pending" },
+      { id: 2, status: "interview" },
+      { id: 3, status: "accepted" },
+      { id: 4, status: "pending" },
+      { id: 5, status: "interview" },
+    ]
+  } else {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    if (error || !user) {
+      redirect("/auth/login")
+    }
+
+    const { data: profileData } = await supabase.from("companies").select("*").eq("id", user.id).single()
+    profile = profileData
+
+    if (!profile) {
+      redirect("/auth/complete-profile")
+    }
+
+    // 企業の求人統計を取得
+    const { data: jobStatsData } = await supabase
+      .from("jobs")
+      .select("id, view_count, is_active")
+      .eq("company_id", user.id)
+    jobStats = jobStatsData || []
+
+    // 応募統計を取得
+    const { data: applicationStatsData } = await supabase
+      .from("applications")
+      .select(`
+        id,
+        status,
+        jobs!inner(company_id)
+      `)
+      .eq("jobs.company_id", user.id)
+    applicationStats = applicationStatsData || []
   }
-
-  const { data: profile } = await supabase.from("companies").select("*").eq("id", user.id).single()
-
-  if (!profile) {
-    redirect("/auth/complete-profile")
-  }
-
-  // 企業の求人統計を取得
-  const { data: jobStats } = await supabase.from("jobs").select("id, view_count, is_active").eq("company_id", user.id)
-
-  // 応募統計を取得
-  const { data: applicationStats } = await supabase
-    .from("applications")
-    .select(`
-      id,
-      status,
-      jobs!inner(company_id)
-    `)
-    .eq("jobs.company_id", user.id)
 
   const activeJobs = jobStats?.filter((job) => job.is_active).length || 0
   const totalViews = jobStats?.reduce((sum, job) => sum + (job.view_count || 0), 0) || 0
@@ -50,6 +84,11 @@ export default async function CompanyDashboard() {
           <div>
             <h1 className="text-3xl font-bold text-narashino-blue">ならしごと</h1>
             <p className="text-muted-foreground">企業管理画面</p>
+            {isDemoMode && (
+              <Badge variant="outline" className="mt-1 bg-yellow-50 text-yellow-700 border-yellow-300">
+                デモモード
+              </Badge>
+            )}
           </div>
           <Button variant="outline">ログアウト</Button>
         </div>
