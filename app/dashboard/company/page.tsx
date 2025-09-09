@@ -1,73 +1,106 @@
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
+"use client" // サーバーコンポーネントからクライアントコンポーネントに変更してlocalStorageアクセスを可能にする
+import { createClient } from "@/lib/supabase/client" // サーバークライアントからクライアントサイドクライアントに変更
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Eye, Users, MessageSquare, TrendingUp } from "lucide-react"
 import Link from "next/link"
+import { useEffect, useState } from "react" // React hooksを追加
 
-export default async function CompanyDashboard() {
-  const isDemoMode = typeof window !== "undefined" && localStorage.getItem("demo_mode") === "true"
+export default function CompanyDashboard() {
+  const [isDemoMode, setIsDemoMode] = useState(false) // デモモード状態を管理
+  const [profile, setProfile] = useState<any>(null) // プロフィール状態を管理
+  const [jobStats, setJobStats] = useState<any[]>([]) // 求人統計状態を管理
+  const [applicationStats, setApplicationStats] = useState<any[]>([]) // 応募統計状態を管理
+  const [isLoading, setIsLoading] = useState(true) // ローディング状態を管理
 
-  let profile: any = null
-  let jobStats: any[] = []
-  let applicationStats: any[] = []
+  useEffect(() => {
+    const checkDemoMode = async () => {
+      console.log("[v0] 企業ダッシュボード - デモモード確認開始")
+      const demoMode = localStorage.getItem("demo_mode") === "true"
+      console.log("[v0] デモモード:", demoMode)
+      setIsDemoMode(demoMode)
 
-  if (isDemoMode) {
-    profile = {
-      company_name: "株式会社習志野テック",
-      verification_status: "approved",
-      plan_type: "standard",
+      if (demoMode) {
+        console.log("[v0] デモモードでデータを設定")
+        setProfile({
+          company_name: "株式会社習志野テック",
+          verification_status: "approved",
+          plan_type: "standard",
+        })
+
+        setJobStats([
+          { id: 1, view_count: 45, is_active: true },
+          { id: 2, view_count: 32, is_active: true },
+          { id: 3, view_count: 28, is_active: false },
+        ])
+
+        setApplicationStats([
+          { id: 1, status: "pending" },
+          { id: 2, status: "interview" },
+          { id: 3, status: "accepted" },
+          { id: 4, status: "pending" },
+          { id: 5, status: "interview" },
+        ])
+      } else {
+        console.log("[v0] 通常モードでSupabase認証確認")
+        const supabase = createClient()
+
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser()
+
+        if (error || !user) {
+          console.log("[v0] 認証エラー、ログインページにリダイレクト")
+          window.location.href = "/auth/login"
+          return
+        }
+
+        const { data: profileData } = await supabase.from("companies").select("*").eq("id", user.id).single()
+
+        if (!profileData) {
+          console.log("[v0] プロフィール未完成、プロフィール作成ページにリダイレクト")
+          window.location.href = "/auth/complete-profile"
+          return
+        }
+
+        setProfile(profileData)
+
+        // 企業の求人統計を取得
+        const { data: jobStatsData } = await supabase
+          .from("jobs")
+          .select("id, view_count, is_active")
+          .eq("company_id", user.id)
+        setJobStats(jobStatsData || [])
+
+        // 応募統計を取得
+        const { data: applicationStatsData } = await supabase
+          .from("applications")
+          .select(`
+            id,
+            status,
+            jobs!inner(company_id)
+          `)
+          .eq("jobs.company_id", user.id)
+        setApplicationStats(applicationStatsData || [])
+      }
+
+      setIsLoading(false)
     }
 
-    jobStats = [
-      { id: 1, view_count: 45, is_active: true },
-      { id: 2, view_count: 32, is_active: true },
-      { id: 3, view_count: 28, is_active: false },
-    ]
+    checkDemoMode()
+  }, [])
 
-    applicationStats = [
-      { id: 1, status: "pending" },
-      { id: 2, status: "interview" },
-      { id: 3, status: "accepted" },
-      { id: 4, status: "pending" },
-      { id: 5, status: "interview" },
-    ]
-  } else {
-    const supabase = await createClient()
-
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser()
-    if (error || !user) {
-      redirect("/auth/login")
-    }
-
-    const { data: profileData } = await supabase.from("companies").select("*").eq("id", user.id).single()
-    profile = profileData
-
-    if (!profile) {
-      redirect("/auth/complete-profile")
-    }
-
-    // 企業の求人統計を取得
-    const { data: jobStatsData } = await supabase
-      .from("jobs")
-      .select("id, view_count, is_active")
-      .eq("company_id", user.id)
-    jobStats = jobStatsData || []
-
-    // 応募統計を取得
-    const { data: applicationStatsData } = await supabase
-      .from("applications")
-      .select(`
-        id,
-        status,
-        jobs!inner(company_id)
-      `)
-      .eq("jobs.company_id", user.id)
-    applicationStats = applicationStatsData || []
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-narashino-blue/5 to-future-orange/5 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-narashino-blue/30 border-t-narashino-blue rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">読み込み中...</p>
+        </div>
+      </div>
+    )
   }
 
   const activeJobs = jobStats?.filter((job) => job.is_active).length || 0
