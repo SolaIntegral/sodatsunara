@@ -28,6 +28,10 @@ export default function LoginPage() {
       console.log("[v0] デモユーザー情報:", demoUser)
       localStorage.setItem("demo_user", JSON.stringify(demoUser))
       localStorage.setItem("demo_mode", "true")
+
+      document.cookie = "demo-mode=true; path=/; max-age=86400"
+      console.log("[v0] デモモードクッキーを設定")
+
       console.log("[v0] ローカルストレージに保存完了")
 
       // 少し遅延を追加してローディング状態を表示
