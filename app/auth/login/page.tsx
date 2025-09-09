@@ -48,11 +48,38 @@ export default function LoginPage() {
 
   const fillDemoCredentials = () => {
     if (userType === "job_seeker") {
-      setEmail("demo.student@example.com")
+      setEmail("demo.student@toho-u.ac.jp")
       setPassword("demo123456")
     } else {
-      setEmail("demo.company@example.com")
+      setEmail("demo.company@gmail.com")
       setPassword("demo123456")
+    }
+  }
+
+  const handleDemoLogin = async () => {
+    const supabase = createClient()
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const demoEmail = userType === "job_seeker" ? "demo.student@toho-u.ac.jp" : "demo.company@gmail.com"
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: "demo123456",
+      })
+      if (error) throw error
+
+      // ユーザータイプに応じてリダイレクト
+      if (userType === "job_seeker") {
+        router.push("/dashboard/job-seeker")
+      } else {
+        router.push("/dashboard/company")
+      }
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "デモログインに失敗しました")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -87,17 +114,25 @@ export default function LoginPage() {
               </TabsContent>
             </Tabs>
 
-            <div className="mb-4 text-center">
+            <div className="mb-4 text-center space-y-2">
+              <Button
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={isLoading}
+                className="w-full bg-future-orange text-white hover:bg-future-orange/90"
+              >
+                🚀 {userType === "job_seeker" ? "学生" : "企業"}デモアカウントでログイン
+              </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={fillDemoCredentials}
-                className="bg-future-orange/10 border-future-orange text-future-orange hover:bg-future-orange hover:text-white"
+                className="w-full bg-future-orange/10 border-future-orange text-future-orange hover:bg-future-orange hover:text-white"
               >
-                🎯 デモアカウントでログイン
+                📝 デモデータを入力
               </Button>
-              <p className="text-xs text-muted-foreground mt-1">
-                {userType === "job_seeker" ? "学生" : "企業"}のデモアカウントを使用
+              <p className="text-xs text-muted-foreground">
+                認証済みの{userType === "job_seeker" ? "学生" : "企業"}アカウントですぐに体験できます
               </p>
             </div>
 
