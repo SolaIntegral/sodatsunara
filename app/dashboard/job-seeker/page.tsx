@@ -1,25 +1,90 @@
-import { redirect } from "next/navigation"
+"use client"
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Calendar, Building, Users } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
-export default async function JobSeekerDashboard() {
-  const supabase = await createClient()
+export default function JobSeekerDashboard() {
+  const [profile, setProfile] = useState<any>(null)
+  const [isDemo, setIsDemo] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-  if (error || !user) {
-    redirect("/auth/login")
+  useEffect(() => {
+    const checkAuth = async () => {
+      console.log("[v0] ダッシュボード認証チェック開始")
+
+      const demoMode = localStorage.getItem("demo_mode")
+      const demoUser = localStorage.getItem("demo_user")
+
+      if (demoMode === "true" && demoUser) {
+        console.log("[v0] デモモード検出")
+        const parsedDemoUser = JSON.parse(demoUser)
+        setProfile({
+          display_name: parsedDemoUser.name,
+          is_school_verified: parsedDemoUser.school_verified,
+          email: parsedDemoUser.email,
+        })
+        setIsDemo(true)
+        setLoading(false)
+        return
+      }
+
+      // 通常のSupabase認証
+      try {
+        const supabase = await createClient()
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser()
+
+        if (error || !user) {
+          console.log("[v0] 認証エラー、ログインページにリダイレクト")
+          router.push("/auth/login")
+          return
+        }
+
+        const { data: profileData } = await supabase.from("job_seekers").select("*").eq("id", user.id).single()
+
+        if (!profileData) {
+          router.push("/auth/complete-profile")
+          return
+        }
+
+        setProfile(profileData)
+        setLoading(false)
+      } catch (error) {
+        console.error("[v0] 認証チェックエラー:", error)
+        router.push("/auth/login")
+      }
+    }
+
+    checkAuth()
+  }, [router])
+
+  const handleLogout = () => {
+    if (isDemo) {
+      localStorage.removeItem("demo_mode")
+      localStorage.removeItem("demo_user")
+      router.push("/auth/login")
+    } else {
+      // 通常のログアウト処理
+      router.push("/auth/login")
+    }
   }
 
-  const { data: profile } = await supabase.from("job_seekers").select("*").eq("id", user.id).single()
-
-  if (!profile) {
-    redirect("/auth/complete-profile")
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-narashino-blue/5 to-future-orange/5 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-narashino-blue/30 border-t-narashino-blue rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">読み込み中...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -29,17 +94,22 @@ export default async function JobSeekerDashboard() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-narashino-blue">ならしごと</h1>
-            <p className="text-muted-foreground">求職者ダッシュボード</p>
+            <p className="text-muted-foreground">
+              求職者ダッシュボード
+              {isDemo && <span className="ml-2 text-future-orange font-medium">(デモモード)</span>}
+            </p>
           </div>
-          <Button variant="outline">ログアウト</Button>
+          <Button variant="outline" onClick={handleLogout}>
+            ログアウト
+          </Button>
         </div>
 
         {/* ウェルカムセクション */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              こんにちは、{profile.display_name}さん！
-              {profile.is_school_verified && (
+              こんにちは、{profile?.display_name}さん！
+              {profile?.is_school_verified && (
                 <Badge variant="secondary" className="bg-green-100 text-green-800">
                   学校認証済み
                 </Badge>
