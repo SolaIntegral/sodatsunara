@@ -118,6 +118,38 @@ export default function SignupPage() {
     }
   }
 
+  const fillDemoData = () => {
+    if (userType === "job_seeker") {
+      setFormData({
+        ...formData,
+        email: "demo.student@example.com",
+        password: "demo123456",
+        confirmPassword: "demo123456",
+        displayName: "田中 太郎",
+        schoolEmail: "student@cit.ac.jp",
+        graduationYear: "2025",
+        major: "情報工学科",
+        bio: "プログラミングに興味があり、特にWebアプリケーション開発を学んでいます。習志野市でのインターンシップや新卒採用の機会を探しています。",
+      })
+    } else {
+      setFormData({
+        ...formData,
+        email: "demo.company@example.com",
+        password: "demo123456",
+        confirmPassword: "demo123456",
+        displayName: "佐藤 花子",
+        companyName: "株式会社習志野テック",
+        website: "https://narashino-tech.example.com",
+        industry: "IT・ソフトウェア",
+        companySize: "11-50",
+        phone: "047-123-4567",
+        address: "千葉県習志野市津田沼1-1-1",
+        description:
+          "習志野市を拠点とするIT企業です。地域密着型のシステム開発を行っており、学生の皆さんと一緒に成長していきたいと考えています。",
+      })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-narashino-blue/5 to-future-orange/5 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
@@ -141,6 +173,18 @@ export default function SignupPage() {
                 <TabsTrigger value="job_seeker">求職者として登録</TabsTrigger>
                 <TabsTrigger value="company">企業として登録</TabsTrigger>
               </TabsList>
+
+              <div className="mt-4 text-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={fillDemoData}
+                  className="bg-future-orange/10 border-future-orange text-future-orange hover:bg-future-orange hover:text-white"
+                >
+                  🎯 デモデータを入力
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1">サンプルデータで動作を確認できます</p>
+              </div>
 
               <form onSubmit={handleSignup} className="space-y-4 mt-6">
                 {/* 共通フィールド */}

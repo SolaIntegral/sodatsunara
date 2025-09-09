@@ -46,6 +46,16 @@ export default function LoginPage() {
     }
   }
 
+  const fillDemoCredentials = () => {
+    if (userType === "job_seeker") {
+      setEmail("demo.student@example.com")
+      setPassword("demo123456")
+    } else {
+      setEmail("demo.company@example.com")
+      setPassword("demo123456")
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-narashino-blue/5 to-future-orange/5 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -76,6 +86,20 @@ export default function LoginPage() {
                 <p className="text-sm text-muted-foreground text-center">企業・採用担当者の方はこちら</p>
               </TabsContent>
             </Tabs>
+
+            <div className="mb-4 text-center">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={fillDemoCredentials}
+                className="bg-future-orange/10 border-future-orange text-future-orange hover:bg-future-orange hover:text-white"
+              >
+                🎯 デモアカウントでログイン
+              </Button>
+              <p className="text-xs text-muted-foreground mt-1">
+                {userType === "job_seeker" ? "学生" : "企業"}のデモアカウントを使用
+              </p>
+            </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
