@@ -122,11 +122,11 @@ export default function SignupPage() {
     if (userType === "job_seeker") {
       setFormData({
         ...formData,
-        email: "demo.student@example.com",
+        email: "demo.student@gmail.com",
         password: "demo123456",
         confirmPassword: "demo123456",
         displayName: "田中 太郎",
-        schoolEmail: "student@cit.ac.jp",
+        schoolEmail: "student@toho-u.ac.jp",
         graduationYear: "2025",
         major: "情報工学科",
         bio: "プログラミングに興味があり、特にWebアプリケーション開発を学んでいます。習志野市でのインターンシップや新卒採用の機会を探しています。",
@@ -134,7 +134,7 @@ export default function SignupPage() {
     } else {
       setFormData({
         ...formData,
-        email: "demo.company@example.com",
+        email: "demo.company@gmail.com",
         password: "demo123456",
         confirmPassword: "demo123456",
         displayName: "佐藤 花子",
