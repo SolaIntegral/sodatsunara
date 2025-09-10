@@ -22,14 +22,14 @@ export function MobileNavigation({ userType = "citizen" }: MobileNavigationProps
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#ffffff] border-t border-[#e5e5e5]">
+    <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border">
       <div className="flex justify-around py-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href
           return (
             <Link key={item.href} href={item.href} className="flex flex-col items-center py-2 px-3">
-              <item.icon className={`w-6 h-6 mb-1 ${isActive ? "text-[#007aff]" : "text-[#666666]"}`} />
-              <span className={`text-xs ${isActive ? "text-[#007aff]" : "text-[#666666]"}`}>{item.label}</span>
+              <item.icon className={`w-6 h-6 mb-1 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+              <span className={`text-xs ${isActive ? "text-primary" : "text-muted-foreground"}`}>{item.label}</span>
             </Link>
           )
         })}
