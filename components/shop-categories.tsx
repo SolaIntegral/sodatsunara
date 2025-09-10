@@ -38,6 +38,8 @@ export function ShopCategories() {
                   src={
                     categoryImages[category as keyof typeof categoryImages] ||
                     "/placeholder.svg?height=96&width=150&query=shop category" ||
+                    "/placeholder.svg" ||
+                    "/placeholder.svg" ||
                     "/placeholder.svg"
                   }
                   alt={category}
