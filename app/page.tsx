@@ -1,30 +1,31 @@
 import Link from "next/link"
+import { Logo } from "@/components/logo"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#ffffff] flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="flex justify-center items-center py-8">
-        <h1 className="text-2xl font-bold text-[#000000]">そだつなら</h1>
+        <Logo width={160} height={52} />
       </div>
 
       {/* Main content */}
       <div className="flex-1 flex flex-col justify-center px-6 pb-20">
         <div className="text-center mb-12">
-          <h2 className="text-xl font-semibold text-[#3c3c43] mb-4">ご利用方法を選択してください</h2>
-          <p className="text-[#666666] text-sm">習志野市の地域ビジネス支援プラットフォーム</p>
+          <h2 className="text-xl font-semibold text-foreground mb-4">ご利用方法を選択してください</h2>
+          <p className="text-muted-foreground text-sm">習志野市の地域ビジネス支援プラットフォーム</p>
         </div>
 
         <div className="space-y-6">
           {/* Citizen option */}
           <Link href="/citizen" className="block">
-            <div className="bg-[#ffffff] border-2 border-[#e5e5e5] rounded-xl p-6 hover:border-[#007aff] transition-colors">
+            <div className="bg-background border-2 border-border rounded-xl p-6 hover:border-primary transition-colors">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-[#000000] mb-2">市民の方</h3>
-                  <p className="text-[#666666] text-sm">お仕事を探す・地域情報を見る</p>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">市民の方</h3>
+                  <p className="text-muted-foreground text-sm">お仕事を探す・地域情報を見る</p>
                 </div>
-                <div className="w-12 h-12 bg-[#007aff] rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -40,13 +41,13 @@ export default function HomePage() {
 
           {/* Business option */}
           <Link href="/business-mobile" className="block">
-            <div className="bg-[#ffffff] border-2 border-[#e5e5e5] rounded-xl p-6 hover:border-[#007aff] transition-colors">
+            <div className="bg-background border-2 border-border rounded-xl p-6 hover:border-primary transition-colors">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-[#000000] mb-2">事業者の方</h3>
-                  <p className="text-[#666666] text-sm">求人掲載・事業者向けサービス</p>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">事業者の方</h3>
+                  <p className="text-muted-foreground text-sm">求人掲載・事業者向けサービス</p>
                 </div>
-                <div className="w-12 h-12 bg-[#007aff] rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -62,7 +63,7 @@ export default function HomePage() {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-[#666666] text-xs">習志野市公式 地域ビジネス支援プラットフォーム</p>
+          <p className="text-muted-foreground text-xs">習志野市公式 地域ビジネス支援プラットフォーム</p>
         </div>
       </div>
     </div>

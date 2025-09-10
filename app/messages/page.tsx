@@ -1,24 +1,23 @@
 import { MobileNavigation } from "@/components/mobile-navigation"
 import { MessagesList } from "@/components/messages-list"
+import { Search } from "lucide-react"
 
 export default function MessagesPage() {
   return (
     <div className="min-h-screen bg-[#ffffff] pb-20">
-      {/* Header */}
-      <div className="flex justify-between items-center px-6 py-4">
-        <div className="w-24 h-8 bg-[#d9d9d9] rounded"></div>
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-8 bg-[#d9d9d9] rounded"></div>
-          <div className="w-10 h-10 bg-[#d9d9d9] rounded-full"></div>
-        </div>
+      {/* Header - LINE風のシンプルなヘッダー */}
+      <div className="bg-[#ffffff] border-b border-[#e5e5e5] px-4 py-4">
+        <h1 className="text-xl font-semibold text-[#000000] text-center">メッセージ</h1>
       </div>
 
-      <div className="px-6">
-        <div className="relative mb-6">
+      <div className="px-4 pt-4">
+        {/* 検索バー - LINE風のデザイン */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#999999]" />
           <input
             type="text"
             placeholder="メッセージを検索"
-            className="w-full bg-[#e5e5e5] rounded-full px-4 py-3 text-[#666666] placeholder-[#666666] outline-none"
+            className="w-full bg-[#f5f5f5] rounded-lg pl-10 pr-4 py-3 text-[#000000] placeholder-[#999999] outline-none border-none"
           />
         </div>
 

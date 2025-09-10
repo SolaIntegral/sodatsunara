@@ -34,6 +34,22 @@ export interface Message {
   avatar?: string
 }
 
+export interface Shop {
+  id: string
+  name: string
+  category: string
+  location: string
+  rating: number
+  image: string
+  tags: string[]
+  description: string
+  address: string
+  phone: string
+  hours: string
+  website?: string
+  isNew?: boolean
+}
+
 export const demoJobs: Job[] = [
   {
     id: "1",
@@ -50,6 +66,7 @@ export const demoJobs: Job[] = [
     isNew: true,
     applicationCount: 12,
     postedDate: "2024-01-15",
+    image: "/------------.jpg",
   },
   {
     id: "2",
@@ -65,6 +82,7 @@ export const demoJobs: Job[] = [
     isNew: false,
     applicationCount: 8,
     postedDate: "2024-01-10",
+    image: "/-------------.jpg",
   },
   {
     id: "3",
@@ -80,6 +98,7 @@ export const demoJobs: Job[] = [
     isNew: true,
     applicationCount: 5,
     postedDate: "2024-01-12",
+    image: "/---------.jpg",
   },
   {
     id: "4",
@@ -95,6 +114,7 @@ export const demoJobs: Job[] = [
     isNew: false,
     applicationCount: 15,
     postedDate: "2024-01-08",
+    image: "/-----------.jpg",
   },
   {
     id: "5",
@@ -110,6 +130,7 @@ export const demoJobs: Job[] = [
     isNew: true,
     applicationCount: 7,
     postedDate: "2024-01-14",
+    image: "/----------.jpg",
   },
   {
     id: "6",
@@ -126,6 +147,7 @@ export const demoJobs: Job[] = [
     isNew: false,
     applicationCount: 9,
     postedDate: "2024-01-05",
+    image: "/---------.jpg",
   },
 ]
 
@@ -172,6 +194,93 @@ export const demoMessages: Message[] = [
   },
 ]
 
+export const demoShops: Shop[] = [
+  {
+    id: "1",
+    name: "カフェ・ド・津田沼",
+    category: "カフェ・喫茶店",
+    location: "津田沼駅",
+    rating: 4.5,
+    image: "/-----------.jpg",
+    tags: ["WiFi完備", "電源あり", "静か"],
+    description: "落ち着いた雰囲気でゆっくりできるカフェです。自家焙煎のコーヒーと手作りスイーツが自慢。",
+    address: "習志野市津田沼1-2-3 津田沼ビル1F",
+    phone: "047-123-4567",
+    hours: "8:00-20:00",
+    website: "https://cafe-tsudanuma.com",
+  },
+  {
+    id: "2",
+    name: "習志野ラーメン横丁",
+    category: "ラーメン",
+    location: "新津田沼駅",
+    rating: 4.3,
+    image: "/----------.jpg",
+    tags: ["深夜営業", "駅近", "人気店"],
+    description: "地元で愛される老舗ラーメン店。濃厚な豚骨スープが自慢の一杯。",
+    address: "習志野市津田沼2-5-8",
+    phone: "047-234-5678",
+    hours: "11:00-23:00",
+    isNew: false,
+  },
+  {
+    id: "3",
+    name: "谷津干潟自然観察センター",
+    category: "観光・レジャー",
+    location: "谷津干潟",
+    rating: 4.7,
+    image: "/---------.jpg",
+    tags: ["自然", "ファミリー", "教育"],
+    description: "野鳥観察や自然学習ができる施設。四季を通じて様々な野鳥に出会えます。",
+    address: "習志野市秋津5-1-1",
+    phone: "047-454-8416",
+    hours: "9:00-17:00",
+    website: "https://yatsuhigata.jp",
+  },
+  {
+    id: "4",
+    name: "イオンモール津田沼",
+    category: "ショッピング",
+    location: "津田沼駅",
+    rating: 4.2,
+    image: "/--------------.jpg",
+    tags: ["大型店", "駐車場", "フードコート"],
+    description: "ファッションからグルメまで何でも揃う大型ショッピングモール。",
+    address: "習志野市津田沼1-23-1",
+    phone: "047-493-5500",
+    hours: "10:00-22:00",
+    website: "https://tsudanuma-aeonmall.com",
+  },
+  {
+    id: "5",
+    name: "習志野温泉 湯楽の里",
+    category: "温泉・スパ",
+    location: "実籾駅",
+    rating: 4.4,
+    image: "/spa-entrance.jpg",
+    tags: ["温泉", "リラックス", "駐車場完備"],
+    description: "天然温泉でゆったりとした時間を過ごせる日帰り温泉施設。",
+    address: "習志野市実籾3-30-1",
+    phone: "047-472-4126",
+    hours: "10:00-24:00",
+    isNew: true,
+  },
+  {
+    id: "6",
+    name: "習志野市民ホール",
+    category: "文化・芸術",
+    location: "京成大久保駅",
+    rating: 4.1,
+    image: "/cultural-hall.jpg",
+    tags: ["コンサート", "演劇", "文化"],
+    description: "地域の文化活動の拠点。コンサートや演劇などが楽しめます。",
+    address: "習志野市本大久保3-8-20",
+    phone: "047-479-1212",
+    hours: "9:00-22:00",
+    website: "https://narashinoshimin-hall.jp",
+  },
+]
+
 export const jobCategories = [
   "飲食・サービス",
   "小売・販売",
@@ -181,6 +290,17 @@ export const jobCategories = [
   "配送・物流",
   "製造・軽作業",
   "IT・技術",
+]
+
+export const shopCategories = [
+  "カフェ・喫茶店",
+  "ラーメン",
+  "観光・レジャー",
+  "ショッピング",
+  "温泉・スパ",
+  "文化・芸術",
+  "美容・健康",
+  "スポーツ・フィットネス",
 ]
 
 export const recentSearches = ["津田沼駅", "カフェ", "時給1200円以上", "土日休み"]

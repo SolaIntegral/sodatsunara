@@ -14,8 +14,8 @@ export function RecommendedJobs() {
             href={`/citizen/jobs/${job.id}`}
             className="bg-[#ffffff] rounded-lg overflow-hidden shadow-sm"
           >
-            <div className="w-full h-32 bg-[#d9d9d9] flex items-center justify-center">
-              <span className="text-[#666666] text-sm">{job.category}</span>
+            <div className="w-full h-32 overflow-hidden">
+              <img src={job.image || "/placeholder.svg"} alt={job.title} className="w-full h-full object-cover" />
             </div>
             <div className="p-3">
               <h3 className="font-medium text-[#000000] mb-1 text-sm">{job.title}</h3>

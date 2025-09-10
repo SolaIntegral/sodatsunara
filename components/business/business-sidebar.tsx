@@ -3,6 +3,7 @@
 import { LayoutDashboard, Building2, Megaphone, BarChart3, Users, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { Logo } from "@/components/logo"
 
 export function BusinessSidebar() {
   const pathname = usePathname()
@@ -17,11 +18,11 @@ export function BusinessSidebar() {
   ]
 
   return (
-    <div className="w-64 bg-[#ffffff] border-r border-[#e5e5e5] flex flex-col">
+    <div className="w-64 bg-background border-r border-border flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-[#e5e5e5]">
-        <h2 className="text-xl font-bold text-[#000000]">そだつなら</h2>
-        <p className="text-sm text-[#666666]">ビジネス管理</p>
+      <div className="p-6 border-b border-border">
+        <Logo width={140} height={46} />
+        <p className="text-sm text-muted-foreground mt-2">ビジネス管理</p>
       </div>
 
       {/* Navigation */}
@@ -47,7 +48,7 @@ export function BusinessSidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-[#e5e5e5]">
+      <div className="p-4 border-t border-border">
         <button className="flex items-center space-x-3 px-3 py-2 text-[#666666] hover:bg-[#e5e5e5] hover:text-[#000000] rounded-lg transition-colors w-full">
           <LogOut className="w-5 h-5" />
           <span className="text-sm font-medium">ログアウト</span>
