@@ -5,20 +5,20 @@ import Image from "next/image"
 import { jobCategories } from "@/lib/demo-data"
 
 const categoryImages = {
-  アルバイト: "/job-categories/part-time.jpg",
-  正社員: "/job-categories/full-time.jpg",
-  パート: "/job-categories/part-time-2.jpg",
-  契約社員: "/job-categories/contract.jpg",
-  派遣: "/job-categories/temporary.jpg",
-  インターン: "/job-categories/intern.jpg",
-  飲食・サービス: "/job-categories/food-service.jpg",
-  小売・販売: "/job-categories/retail.jpg",
-  事務・オフィスワーク: "/job-categories/office.jpg",
-  教育・講師: "/job-categories/education.jpg",
-  医療・介護: "/job-categories/healthcare.jpg",
-  配送・物流: "/job-categories/logistics.jpg",
-  製造・軽作業: "/job-categories/manufacturing-new.jpg",
-  IT・技術: "/job-categories/it-tech-new.jpg",
+  "アルバイト": "/job-categories/part-time.jpg",
+  "正社員": "/job-categories/full-time.jpg",
+  "パート": "/job-categories/part-time-2.jpg",
+  "契約社員": "/job-categories/contract.jpg",
+  "派遣": "/job-categories/temporary.jpg",
+  "インターン": "/job-categories/intern.jpg",
+  "飲食・サービス": "/job-categories/food-service.jpg",
+  "小売・販売": "/job-categories/retail.jpg",
+  "事務・オフィスワーク": "/job-categories/office.jpg",
+  "教育・講師": "/job-categories/education.jpg",
+  "医療・介護": "/job-categories/healthcare.jpg",
+  "配送・物流": "/job-categories/logistics.jpg",
+  "製造・軽作業": "/job-categories/manufacturing-new.jpg",
+  "IT・技術": "/job-categories/it-tech-new.jpg",
 }
 
 export function JobCategories() {
