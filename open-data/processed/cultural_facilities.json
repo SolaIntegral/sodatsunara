@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "習志野市民会館",
+    "address": "本大久保3丁目8番20号",
+    "latitude": 35.685273,
+    "longitude": 140.047193,
+    "phone": "047-476-3213",
+    "category": "文化施設",
+    "type": "cultural"
+  },
+  {
+    "id": 2,
+    "name": "習志野文化ホール",
+    "address": "谷津1丁目16番1号",
+    "latitude": 35.689504,
+    "longitude": 140.019309,
+    "phone": "047-479-1212",
+    "category": "文化施設",
+    "type": "cultural"
+  },
+  {
+    "id": 3,
+    "name": "旧大沢家住宅",
+    "address": "藤崎1丁目14番43号（森林公園内）",
+    "latitude": 35.688154,
+    "longitude": 140.036366,
+    "phone": "047-477-4600",
+    "category": "文化施設",
+    "type": "cultural"
+  },
+  {
+    "id": 4,
+    "name": "旧鴇田家住宅",
+    "address": "実籾2丁目24番1号(実籾本郷公園内)",
+    "latitude": 35.684283,
+    "longitude": 140.064903,
+    "phone": "047-471-0144",
+    "category": "文化施設",
+    "type": "cultural"
+  },
+  {
+    "id": 5,
+    "name": "埋蔵文化財調査室",
+    "address": "谷津3丁目1番36号(谷津南小学校内)",
+    "latitude": 35.679456,
+    "longitude": 140.008911,
+    "phone": "047-453-8770",
+    "category": "文化施設",
+    "type": "cultural"
+  },
+  {
+    "id": 6,
+    "name": "ドイツ捕虜オーケストラの碑",
+    "address": "東習志野4丁目4番地4号",
+    "latitude": 35.690171,
+    "longitude": 140.074771,
+    "phone": "",
+    "category": "文化施設",
+    "type": "cultural"
+  }
+]
